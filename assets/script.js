@@ -14,7 +14,7 @@ function initialize() {
         }
 }
 
-function error () {
+function error() {
     currentLoc = "Woodland Hills"
     getCurrent(currentLoc);
 }
@@ -24,15 +24,19 @@ function getCurrent(city) {
     $.ajax({
         url: queryURL,
         method: 'GET'
-        error: function () {
+        error() {
             savedLocation.splice(savedLocation.indexOf(city), 1);
             localStorage.setItem("weathercities", JSON.stringify(savedLocation));
             initialize();
         }
-    }).then(function (response)) {
+    }).then(function (response) {
         let currCard = $('<div>').attr('class', 'card bg-light');
         $('earthforecast').append(currCard);
 
-        let currCardHead = $
+        let currCardHead = $('<div>').attr('class', 'card-header').text('Current weather for ' + response.name);
+        currCard.append(currCardHead);
+
+        let cardRow = $('<div>').attr('class', 'row no-gutters');
+        currCardHead.append(cardRow);
     }
 }
