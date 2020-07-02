@@ -6,7 +6,7 @@ let APIKey = "f37afb30faeaad6b445e174ebe59ab37";
 
 function initialize() {
     savedLocation = JSON.parse(localStorage.getItem("weathercities"));
-    let lastSearch
+    let lastSearch;
         if (savedLocation) {
             //display previous location
             currentLoc = savedLocation[savedLocation.length - 1];
@@ -14,6 +14,19 @@ function initialize() {
         }
 }
 
+function success (position) {
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+    let queryURL = "api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon" + lon + "&APPID=" + APIKey;
+    $.ajax({
+        url: queryURL,
+        method: 'GET'
+    }).then(function (response) {
+        currentLoc = response.name;
+        savLoc (response.name);
+        getCurrent(currentLoc);
+    });
+}
 
 function error() {
     currentLoc = "Woodland Hills"
@@ -41,5 +54,16 @@ function getCurrent(city) {
 
         let cardRow = $('<div>').attr('class', 'row no-gutters');
         currCardHead.append(cardRow);
+
+        let iconURL = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
+
+        let imgDiv = $("<div>").attr('class', 'col-md-4').append($('<img>').attr('src', iconURL).attr('class', 'card-img'));
+
+        let texDiv = $('<div>').attr('class', 'col-md-8');
+        let cardBody = $('<div>').attr('class', 'card-body');
+        textDiv.append(cardBody);
+
+        cardBody.append($('<h3>').attr('class', 'card-title').text(response.name));
+        
     })
 }
