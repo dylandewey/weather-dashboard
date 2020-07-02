@@ -14,6 +14,7 @@ function initialize() {
         }
 }
 
+
 function error() {
     currentLoc = "Woodland Hills"
     getCurrent(currentLoc);
@@ -40,5 +41,5 @@ function getCurrent(city) {
 
         let cardRow = $('<div>').attr('class', 'row no-gutters');
         currCardHead.append(cardRow);
-    }
+    })
 }
