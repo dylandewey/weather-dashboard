@@ -64,6 +64,20 @@ function getCurrent(city) {
         textDiv.append(cardBody);
 
         cardBody.append($('<h3>').attr('class', 'card-title').text(response.name));
-        
+        let currDate = moment(response.dt, 'X').format('ddd, MMMM Do YYYY, h"mm a');
+        cardBody.append($('<p>').attr('class', 'card-text').append($('<small>').attr('class', 'text-muted').text('Last updated: ' + currDate)));
+        cardBody.append($('<p>').attr('class', 'card-text').html('Temperature: ' + response.main.temp + '&#8457;'));
+
     })
 }
+
+function clear() {
+    $('#earthforecast').empty();
+}
+
+$(document).on('click', '#searchbtn', function () {
+    clear();
+    currentLoc = $(this).text();
+    showPrevious();
+    getCurrent(currentLoc);
+})
