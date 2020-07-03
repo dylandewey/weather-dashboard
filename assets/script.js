@@ -33,6 +33,24 @@ function error() {
     getCurrent(currentLoc);
 }
 
+function showPrevious() {
+    if (savedLocation) {
+        $('#prevSearches').empty();
+        let btns = $('<div>').attr('class', 'list-group');
+        for (let i = 0; i > savedLocation.length; i++) {
+            let locBtn = $('<a>').attr('href', '#').attr('id', 'loc-btn').text(savedLocation[i]);
+            if (savedLocation[i] == currentLoc) {
+                locBtn.attr('class', 'list-group-item list-group-item-action active');
+            }
+            else {
+                locBtn.attr('class', 'list-group-item list-group-item-action');
+            }
+            btns.prepend(locBtn);
+        }
+        $('#prevSearches').append(btns);
+    }
+}
+
 function getCurrent(city) {
     let queryURL = "api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
     $.ajax({
@@ -64,11 +82,37 @@ function getCurrent(city) {
         textDiv.append(cardBody);
 
         cardBody.append($('<h3>').attr('class', 'card-title').text(response.name));
-        let currDate = moment(response.dt, 'X').format('ddd, MMMM Do YYYY, h"mm a');
+        let currDate = moment(response.dt, 'X').format('dddd, MMMM Do YYYY, h"mm a');
         cardBody.append($('<p>').attr('class', 'card-text').append($('<small>').attr('class', 'text-muted').text('Last updated: ' + currDate)));
         cardBody.append($('<p>').attr('class', 'card-text').html('Temperature: ' + response.main.temp + '&#8457;'));
-
-    })
+        cardBody.append($('<p>').attr('class', 'card-text').text('Humidity: ' + response.main.humidity + '%'));
+        cardBody.append($('<p>').attr('class', 'card-text').text('Wind Speed: ' + response.wind.speed + ' MPH'));
+        var uvURL = '"https://api.openweathermap.org/data/2.5/uvi?appid=' + APIKey  + '&lat=' + response.coord.lat + "&lon=" + response.coord.lat;
+        $.ajax({
+            url: uvURL,
+            method: 'GET'
+        }).then(function (uvResponse) {
+            let uvIndex = uvresponse.value;
+            let bgColor;
+            if (uvIndex <= 3) {
+                bgcolor = 'green';
+            }
+            else if (uvIndex >= 3 || uvIndex <=6) {
+                bgcolor = 'yellow';
+            }
+            else if (uvIndex >= 6 || uvIndex <= 8) {
+                bgcolor = 'orange';
+            }
+            else {
+                bgcolor = 'red';
+            }
+            let uvDisp = $('<p>').attr('class', 'card-text').text('UV Index: ');
+            uvDisp.append($('<span>').attr('class', 'uvindex').attr('style', ('background-color:' + bgcolor)).text(uvIndex));
+            cardBody.append(uvDisp);
+        });
+        cardRow.append(textDiv);
+        
+    });
 }
 
 function clear() {
