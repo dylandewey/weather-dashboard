@@ -1,11 +1,11 @@
 let currentLoc;
 let savedLocation = [];
-let APIKey = "f37afb30faeaad6b445e174ebe59ab37";
+let APIKey = '&appid=f37afb30faeaad6b445e174ebe59ab37';
 
 
 
 function initialize() {
-    savedLocation = JSON.parse(localStorage.getItem("weathercities"));
+    savedLocation = JSON.parse(localStorage.getItem('weathercities'));
     let lastSearch;
         if (savedLocation) {
             //display previous location
@@ -17,7 +17,7 @@ function initialize() {
 function success (position) {
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
-    let queryURL = "api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon" + lon + "&APPID=" + APIKey;
+    let queryURL = 'api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon' + lon + APIKey + '&units=imperial';
     $.ajax({
         url: queryURL,
         method: 'GET'
@@ -52,20 +52,18 @@ function showPrevious() {
 }
 
 function getCurrent(city) {
-    let queryURL = 'api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIKey + '&units=imperial';
+    let queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + APIKey;
     $.ajax({
         url: queryURL,
         method: 'GET',
-        error() {
+        error: function () {
             savedLocation.splice(savedLocation.indexOf(city), 1);
             localStorage.setItem("weathercities", JSON.stringify(savedLocation));
             initialize();
-        
         }
-    })
-        .then(function (response) {
+    }).then(function (response) {
         let currCard = $('<div>').attr('class', 'card bg-light');
-        $('earthforecast').append(currCard);
+        $('#earthforecast').append(currCard);
 
         let currCardHead = $('<div>').attr('class', 'card-header').text('Current weather for ' + response.name);
         currCard.append(currCardHead);
@@ -76,8 +74,10 @@ function getCurrent(city) {
         let iconURL = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
 
         let imgDiv = $("<div>").attr('class', 'col-md-4').append($('<img>').attr('src', iconURL).attr('class', 'card-img'));
+        cardRow.appen(imgDiv);
 
         let texDiv = $('<div>').attr('class', 'col-md-8');
+        
         let cardBody = $('<div>').attr('class', 'card-body');
         textDiv.append(cardBody);
 
@@ -94,22 +94,22 @@ function getCurrent(city) {
             url: uvURL,
             method: 'GET'
         }).then(function (uvResponse) {
-            let uvIndex = uvresponse.value;
+            let uvIndex = uvResponse.value;
             let bgColor;
             if (uvIndex <= 3) {
-                bgcolor = 'green';
+                bgColor = 'green';
             }
             else if (uvIndex >= 3 || uvIndex <=6) {
-                bgcolor = 'yellow';
+                bgColor = 'yellow';
             }
             else if (uvIndex >= 6 || uvIndex <= 8) {
-                bgcolor = 'orange';
+                bgColor = 'orange';
             }
             else {
-                bgcolor = 'red';
+                bgColor = 'red';
             }
             let uvDisp = $('<p>').attr('class', 'card-text').text('UV Index: ');
-            uvDisp.append($('<span>').attr('class', 'uvindex').attr('style', ('background-color:' + bgcolor)).text(uvIndex));
+            uvDisp.append($('<span>').attr('class', 'uvindex').attr('style', ('background-color:' + bgColor)).text(uvIndex));
             cardBody.append(uvDisp);
         });
         cardRow.append(textDiv);
@@ -119,7 +119,7 @@ function getCurrent(city) {
 
 function getForecast(city) {
     //5 Day forecast
-    let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + '&APPID=' + APIKey + '&units=imperial';
+    let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + APIKey + '&units=imperial';
     $.ajax({
         url: uvURL,
         method: 'GET'
