@@ -120,15 +120,80 @@ function getCurrent(city) {
 function getForecast(city) {
     //5 Day forecast
     let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + '&APPID=' + APIKey + '&units=imperial';
+    $.ajax({
+        url: uvURL,
+        method: 'GET'
+    }).then(function (response) {
+        let newRow  = $('<div>').attr('class', 'forecast');
+        $('#earthforecast').append(newRow);
+
+    for (let i = 0; i < response.list.length; i++) {
+        if (response.list[i].dt_txt.indexOf('15:00:00') !== -1) {
+            let newCol = $('<div>').attr('class', 'one-fifth');
+            newRow.append(newCol);
+            
+            let newCard = $('<div>').attr('class', 'card text-white bg-primary');
+            newCol.append(newCord);
+
+            let cardHead = $('<div>').attr('class', 'card-header').text(moment(response.list[i].dt, 'X').format('mmm Do'));
+            newCard.append(cardHead);
+
+            let cardImg = $('<img>').attr('class', 'card-img-top').attr('src', 'https://openweathermap.org/img/wn/' + response.list[i].weather[0].icon + '@2x.png');
+            newCard.append(cardImg);
+
+            let bodyDiv = $('<div>').attr('class', 'card-body');
+            newCard.append(bodyDiv);
+
+            bodyDiv.append($('<p>').attr('class', 'card-text').html('Temp: ' + response.list[i].main.temp + ' &#8457;'));
+            bodyDiv.append($('<p>').attr('class', 'card-text').text('Humidity: ' + response.list[i].main.humidity + '%'));
+
+            }
+        }
+    })
 }
+
 
 function clear() {
     $('#earthforecast').empty();
 }
+
+function saveLoc(loc) {
+    
+    if (savedLocation === null) {
+        savedLocation = [loc];
+    }
+    else if (savedLocation.indexOf(loc) === -1) {
+        savedLocation.push(loc);
+    }
+    //save the new array to localstorage
+    localStorage.setItem('weathercities', JSON.stringify(savedLocation));
+    showPrevious();
+}
+
+$('#searchbtn').on('click', function () {
+    event.preventDefault();
+    
+    var loc = $('#searchinput').val().trim();
+    
+    if (loc !== '') {
+        //clear the previous forecast
+        clear();
+        currentLoc = loc;
+        saveLoc(loc);
+        //clear the search field value
+        $('#searchinput').val('');
+        //get the new forecast
+        getCurrent(loc);
+    }
+});
+
+
 
 $(document).on('click', '#searchbtn', function () {
     clear();
     currentLoc = $(this).text();
     showPrevious();
     getCurrent(currentLoc);
-})
+});
+
+    initialize();
