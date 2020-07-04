@@ -8,6 +8,8 @@ I feel the same about CSS as I do about HTML.  I have a pretty good understandin
 This is where I have the issues.  I still have to use outside resources to help with the code and read it over and over, scroll top to bottom trying to figure out how everything connects and make everything connect.  I'm definitly not even close to being comfortable with JavaScript so it's not a matter of complacency, it's a matter of diligence and time.  I need to spend more time on it and researching and reading.
 ## Screenshot
 This is all I can get at this point.  Hopefully I can have it updated and working soon.  
+## Link
+
 
 <img alt="weather-dashboard" src="assets/weather.jpeg" width="500">
 
