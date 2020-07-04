@@ -52,7 +52,7 @@ function showPrevious() {
 }
 
 function getCurrent(city) {
-    let queryURL = "api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+    let queryURL = 'api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIKey + '&units=imperial';
     $.ajax({
         url: queryURL,
         method: 'GET',
@@ -87,7 +87,9 @@ function getCurrent(city) {
         cardBody.append($('<p>').attr('class', 'card-text').html('Temperature: ' + response.main.temp + '&#8457;'));
         cardBody.append($('<p>').attr('class', 'card-text').text('Humidity: ' + response.main.humidity + '%'));
         cardBody.append($('<p>').attr('class', 'card-text').text('Wind Speed: ' + response.wind.speed + ' MPH'));
-        var uvURL = '"https://api.openweathermap.org/data/2.5/uvi?appid=' + APIKey  + '&lat=' + response.coord.lat + "&lon=" + response.coord.lat;
+        
+        //UV Index
+        var uvURL = 'https://api.openweathermap.org/data/2.5/uvi?appid=' + APIKey  + '&lat=' + response.coord.lat + "&lon=" + response.coord.lat;
         $.ajax({
             url: uvURL,
             method: 'GET'
@@ -113,6 +115,11 @@ function getCurrent(city) {
         cardRow.append(textDiv);
         
     });
+}
+
+function getForecast(city) {
+    //5 Day forecast
+    let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + '&APPID=' + APIKey + '&units=imperial';
 }
 
 function clear() {
