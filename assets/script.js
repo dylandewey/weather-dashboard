@@ -26,7 +26,7 @@ function initialize() {
 function success(position) {
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
-    let queryURL = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
+    let queryURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -173,7 +173,6 @@ function clear() {
 }
 
 function saveLoc(loc) {
-    
     if (savedLocation === null) {
         savedLocation = [loc];
     }
