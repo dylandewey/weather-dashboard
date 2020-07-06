@@ -1,28 +1,29 @@
 let currentLoc;
 let savedLocation = [];
-let APIKey = '5bd81de55362b2ae46ea49fe9d348f89';
+let APIKey = "5bd81de55362b2ae46ea49fe9d348f89";
 
 
 
 function initialize() {
-    savedLocation = JSON.parse(localStorage.getItem('weathercities'));
+    savedLocation = JSON.parse(localStorage.getItem("cityweather"));
         if (savedLocation) {
             //display previous location
             currentLoc = savedLocation[savedLocation.length - 1];
             showPrevious();
             getCurrent(currentLoc);
+            console.log(localStorage);
         }
         else {
             if (!navigator.geolocation) {
-                getCurrent('Myrtle Beach');
+                getCurrent("Myrtle Beach");
             }
         else {
-            navigator.geolocation.getCurrentPosition(success,error);
+            navigator.geolocation.getCurrentPosition(success, error);
         }
     }
 }
 
-function success (position) {
+function success(position) {
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
     let queryURL = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
@@ -31,13 +32,12 @@ function success (position) {
         method: "GET"
     }).then(function (response) {
         currentLoc = response.name;
-        savLoc (response.name);
         getCurrent(currentLoc);
     });
 }
 
 function error() {
-    currentLoc = "Woodland Hills"
+    currentLoc = "Myrtle Beach"
     getCurrent(currentLoc);
 }
 
@@ -66,14 +66,14 @@ function getCurrent(city) {
         method: "GET",
         error: function () {
             savedLocation.splice(savedLocation.indexOf(city), 1);
-            localStorage.setItem("weathercities", JSON.stringify(savedLocation));
+            localStorage.setItem("cityweather", JSON.stringify(savedLocation));
             initialize();
         }
     }).then(function (response) {
         let currCard = $("<div>").attr("class", "card bg-light");
         $("#earthforecast").append(currCard);
 
-        let currCardHead = $("<div>").attr("class", "card-header").text("Current weather for " + response.name);
+        let currCardHead = $("<div>").attr("class", "card-header").text("Current Weather for " + response.name);
         currCard.append(currCardHead);
 
         let cardRow = $("<div>").attr("class", "row no-gutters");
@@ -126,14 +126,14 @@ function getCurrent(city) {
             cardBody.append(uvDisp);
         });
         cardRow.append(textDiv);
-        getForecast (response.id);
+        getForecast(response.id);
         
     });
 }
 
 function getForecast(city) {
     //5 Day forecast
-    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + city + APIKey;
+    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + city + "&appid=" + APIKey + "&units=imperial";
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -180,7 +180,7 @@ function saveLoc(loc) {
         savedLocation.push(loc);
     }
     //save the new array to localStorage
-    localStorage.setItem("weathercities", JSON.stringify(savedLocation));
+    localStorage.setItem("cityweather", JSON.stringify(savedLocation));
     showPrevious();
 }
 
