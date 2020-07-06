@@ -32,6 +32,7 @@ function success(position) {
         method: "GET"
     }).then(function (response) {
         currentLoc = response.name;
+        //savLoc(response.name);
         getCurrent(currentLoc);
     });
 }
