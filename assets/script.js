@@ -60,7 +60,7 @@ function showPrevious() {
 }
 
 function getCurrent(city) {
-    let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+    let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
     $.ajax({
         url: queryURL,
         method: "GET",
