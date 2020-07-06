@@ -13,5 +13,5 @@ This is all I can get at this point.  Hopefully I can have it updated and workin
 ## Link
 https://dylandewey.github.io/weather-dashboard/
 
-<img alt="weather-dashboard" src="assets/weather.jpeg" width="500">
+<img alt="weather-dashboard" src="assets/weather.png" width="500">
 
