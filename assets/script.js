@@ -1,26 +1,34 @@
 let currentLoc;
 let savedLocation = [];
-let APIKey = '&appid=f37afb30faeaad6b445e174ebe59ab37';
+let APIKey = '5bd81de55362b2ae46ea49fe9d348f89';
 
 
 
 function initialize() {
     savedLocation = JSON.parse(localStorage.getItem('weathercities'));
-    let lastSearch;
         if (savedLocation) {
             //display previous location
             currentLoc = savedLocation[savedLocation.length - 1];
-            
+            showPrevious();
+            getCurrent();
         }
+        else {
+            if (!navigator.geolocation) {
+                getCurrent('Woodland Hills');
+            }
+        else {
+            navigator.geolocation.getCurrentPosition(success,error);
+        }
+    }
 }
 
 function success (position) {
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
-    let queryURL = 'api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon' + lon + APIKey + '&units=imperial';
+    let queryURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" +lat+ "&lon=" + lon + "&appid=" + APIKey;
     $.ajax({
         url: queryURL,
-        method: 'GET'
+        method: 'GET',
     }).then(function (response) {
         currentLoc = response.name;
         savLoc (response.name);
@@ -29,7 +37,7 @@ function success (position) {
 }
 
 function error() {
-    currentLoc = "Woodland Hills"
+    currentLoc = 'Woodland Hills'
     getCurrent(currentLoc);
 }
 
@@ -52,7 +60,7 @@ function showPrevious() {
 }
 
 function getCurrent(city) {
-    let queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + APIKey;
+    let queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + "&appid=" + APIKey;
     $.ajax({
         url: queryURL,
         method: 'GET',
@@ -119,7 +127,7 @@ function getCurrent(city) {
 
 function getForecast(city) {
     //5 Day forecast
-    let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + APIKey + '&units=imperial';
+    let queryURL = 'https://api.openweathermap.org/data/2.5/forecast?id=' + city + APIKey;
     $.ajax({
         url: uvURL,
         method: 'GET'
