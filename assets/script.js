@@ -13,14 +13,29 @@ function initialize() {
             getCurrent(currentLoc);
             console.log(localStorage);
         }
+        //if user does not want to share location it gives this default location weather
         else {
             if (!navigator.geolocation) {
                 getCurrent("Myrtle Beach");
             }
-        else {
-            navigator.geolocation.getCurrentPosition(success, error);
-        }
+        //asking user permission to share location
+        //if user allows app will give weather for users current location (geolocation API)
+            else {
+            navigator.geolocation.getCurrentPosition(success, initialValue);
+         }
     }
+}
+
+function saveLoc(loc) {
+    if (savedLocation === null) {
+        savedLocation = [loc];
+    }
+    else if (savedLocation.indexOf(loc) === -1) {
+        savedLocation.push(loc);
+    }
+    //save the new array to localStorage
+    localStorage.setItem("cityweather", JSON.stringify(savedLocation));
+    showPrevious();
 }
 
 function success(position) {
@@ -32,12 +47,12 @@ function success(position) {
         method: "GET"
     }).then(function (response) {
         currentLoc = response.name;
-        //savLoc(response.name);
+        saveLoc(currentLoc);
         getCurrent(currentLoc);
     });
 }
 
-function error() {
+function initialValue() {
     currentLoc = "Myrtle Beach"
     getCurrent(currentLoc);
 }
@@ -61,16 +76,19 @@ function showPrevious() {
 }
 
 function getCurrent(city) {
-    let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
+    let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIKey;
     $.ajax({
         url: queryURL,
         method: "GET",
-        error: function () {
-            savedLocation.splice(savedLocation.indexOf(city), 1);
-            localStorage.setItem("cityweather", JSON.stringify(savedLocation));
-            initialize();
-        }
+        
     }).then(function (response) {
+
+        
+            //savedLocation.splice(savedLocation.indexOf(city), 1);
+            localStorage.setItem("cityweather", JSON.stringify(savedLocation));
+            //initialize();
+        
+
         let currCard = $("<div>").attr("class", "card bg-light");
         $("#earthforecast").append(currCard);
 
@@ -172,17 +190,7 @@ function clear() {
     $("#earthforecast").empty();
 }
 
-function saveLoc(loc) {
-    if (savedLocation === null) {
-        savedLocation = [loc];
-    }
-    else if (savedLocation.indexOf(loc) === -1) {
-        savedLocation.push(loc);
-    }
-    //save the new array to localStorage
-    localStorage.setItem("cityweather", JSON.stringify(savedLocation));
-    showPrevious();
-}
+
 
 $("#searchbtn").on("click", function () {
     event.preventDefault();
@@ -211,3 +219,5 @@ $(document).on("click", "#loc-btn", function () {
 });
 
     initialize();
+
+    
